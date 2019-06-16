@@ -24,15 +24,6 @@ bl_info = {
 }
 
 
-class IRT_Properties(PropertyGroup):
-
-    export_with_offset = BoolProperty(
-        name="Export bool",
-        description="Export with offset or not",
-        default=False
-    )
-
-
 class IRT_OT_render(Operator):
     bl_idname = "render.irt_local"
     bl_description = "Render with predefind settings"
@@ -50,17 +41,23 @@ class IRT_OT_render(Operator):
         return {"FINISHED"}
 
 
-class IRT_OT_export_with_move(Operator):
-    bl_idname = "export.irt_export_move"
-    bl_description = "Export on 0 0 0"
+class IRT_OT_export(Operator):
+    bl_idname = "export.irt_export"
+    bl_description = "Export the selected object, offseted or not"
     bl_label = "Export Selection"
+
+    export_with_offset = BoolProperty(
+        name="Export bool",
+        description="Export with offset or not",
+        default=False
+    )
 
     @classmethod
     def poll(cls, context):
         return context.active_object is not None
 
     def execute(self, context):
-        if context.scene.export_with_offset == True:
+        if export_with_offset == True:
             obj = context.active_object
             location = obj.location.copy()
             obj.location = Vector((0, 0, 0))
@@ -79,22 +76,6 @@ class IRT_OT_export_with_move(Operator):
             bpy.ops.export_scene.fbx(filepath=filename, use_selection=True)
             print("Export completed [ offseted ]")
             return {"FINISHED"}
-
-
-class IRT_OT_export_withоut_move(Operator):
-    bl_idname = "export.irt_export_offseted"
-    bl_description = "Export with offset"
-    bl_label = "Export Selection With Offset"
-
-    @classmethod
-    def poll(cls, context):
-        return context.active_object is not None
-
-    def execute(self, context):
-        filename = bpy.path.abspath("//") + context.active_object.name + ".fbx"
-        bpy.ops.export_scene.fbx(filepath=filename, use_selection=True)
-        print("Export completed [ offseted ]")
-        return {"FINISHED"}
 
 
 class IRT_OT_hide_overlay_studio_objects(Operator):
@@ -128,20 +109,19 @@ class IRT_PT_panel(Panel):
         row = layout.row()
         row.operator("render.irt_hide_studio", icon="WORLD_DATA")
 
-        layout.prop(bpy.data.scenes['Scene'].export_with_offset,
-                    "export_with_offset", text="Checkbox")
-
         # Export selection button
         col = layout.column(align=True)
-        col.operator("export.irt_export_move", icon="WORLD_DATA")
-        col.operator("export.irt_export_offseted", icon="WORLD_DATA")
+        col.operator("export.irt_export", icon="WORLD_DATA")
+
+        offset_export = col.operator(
+            "export.irt_export", text="Export Selection With Offset", icon="WORLD_DATA")
+        offset_export.export_with_offset = True
 
 
 __classes__ = (
     IRT_PT_panel,
     IRT_OT_render,
-    IRT_OT_export_with_move,
-    IRT_OT_export_withоut_move,
+    IRT_OT_export,
     IRT_OT_hide_overlay_studio_objects
 )
 
