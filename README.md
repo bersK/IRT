@@ -13,3 +13,13 @@ IRT is a blender addon made with the idea of speeding up commonly used tools or 
     - Exports your selection to .fbx and moves it beforehand to 0,0,0 and back to make sure your pivot is where it has to be
   - Export with offset
     - Exports your selection to .fbx without moving i.e. it will have an offset if your object is not centered ( 0, 0, 0 )
+
+## Instalation
+
+Download the init python file and rename it to irt.py ( to be fixed soon )
+
+## Future features
+- Defineable names for exported objects, possibly format selection
+- Name iteration, currently writes over your rendered thumbnail
+- Thumbnail save location options
+- Automatic ID map generation
